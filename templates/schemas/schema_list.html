@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Data Schemas</h1>
+
+  {% if schema_list %}
+    <table class="table table-bordered">
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Modified</th>
+        <th>Actions</th>
+      </tr>
+    {% for schema in schema_list %}
+      <tr>
+        <td>{{ schema.id }}</td>
+        <td><a href="#">{{ schema.name }}</a></td>
+        <td>{{ schema.modified }}</td>
+        <td>Edit Delete</td>
+      </tr>
+    {% endfor %}
+
+    </table>
+    {% else %}
+      <p>There are no schemas yet</p>
+    {% endif %}
+{% endblock %}

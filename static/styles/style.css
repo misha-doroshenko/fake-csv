@@ -1,0 +1,11 @@
+body {
+  font-family: "Lucinda Grande", "Lucinda Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+}
+
+.hidden {
+  display: none;
+}
+
+.schema-form {
+  margin: 35px 50px 0 50px;
+}

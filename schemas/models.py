@@ -55,6 +55,8 @@ class Column(models.Model):
     )
     name = models.CharField(max_length=20)
     type = models.CharField(max_length=7, choices=TYPE_CHOICES)
+    min_int = models.IntegerField(null=True, blank=True)
+    max_int = models.IntegerField(null=True, blank=True)
     schema = models.ForeignKey(
         Schema,
         on_delete=models.CASCADE,

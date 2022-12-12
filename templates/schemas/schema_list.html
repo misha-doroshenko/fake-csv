@@ -1,27 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Data Schemas</h1>
-
+  <div class="schema-form w-75">
+  <h1>
+    Data Schemas
+    <a href="{% url 'schemas:schema-create' %}" class="btn btn-success" style="float: right;">New Schema</a>
+  </h1>
+    <br>
   {% if schema_list %}
-    <table class="table table-bordered">
-      <tr>
-        <th>#</th>
-        <th>Title</th>
-        <th>Modified</th>
-        <th>Actions</th>
-      </tr>
-    {% for schema in schema_list %}
-      <tr>
-        <td>{{ schema.id }}</td>
-        <td><a href="#">{{ schema.name }}</a></td>
-        <td>{{ schema.modified }}</td>
-        <td>Edit Delete</td>
-      </tr>
-    {% endfor %}
+      <table class="table table-bordered">
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Modified</th>
+          <th>Actions</th>
+        </tr>
+      {% for schema in schema_list %}
+        <tr>
+          <td>{{ schema.id }}</td>
+          <td><a href="#">{{ schema.name }}</a></td>
+          <td>{{ schema.modified }}</td>
+          <td><a href="{% url 'schemas:schema-update' pk=schema.id %}">Edit</a></td>
+        </tr>
+      {% endfor %}
 
-    </table>
+      </table>
     {% else %}
       <p>There are no schemas yet</p>
     {% endif %}
+  </div>
 {% endblock %}

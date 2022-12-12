@@ -1,0 +1,59 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<table>
+{{ formset.management_form|crispy }}
+
+  {% for form in formset.forms %}
+    <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
+      {% for field in form.visible_fields %}
+        <td>
+          {% if forloop.first %}
+            {% for hidden in form.hidden_fields %}
+              {{ hidden }}
+            {% endfor %}
+          {% endif %}
+          {{ field|as_crispy_field }}
+        </td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+
+</table>
+<br>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+</script>
+<script src="{% static 'libraries/jquery.formset.js' %}">
+</script>
+<script type="text/javascript">
+    let numberInputs = document.getElementsByClassName('numberinput')
+
+    for (let input of numberInputs){
+        if (input.getAttribute("value") == null) {
+          $(`#${input.getAttribute('id')}`).css('visibility', 'hidden')
+          $(`label[for=${input.getAttribute('id')}]`).css('visibility', 'hidden')
+        }
+    }
+
+    $('.formset_row-{{ formset.prefix }}').formset({
+        addText: 'Add column',
+        deleteText: 'Delete',
+        prefix: '{{ formset.prefix }}',
+    });
+
+    document.getElementById('table-form').addEventListener('change', function (e){
+        let number = e.target.id.split('-')[1]
+        if (e.target && e.target.tagName == "SELECT" && $(`#${e.target.id}`).prop('value') == "Int") {
+          $(`#id_columns-${number}-min_int`).css('visibility', 'visible')
+          $(`#id_columns-${number}-max_int`).css('visibility', 'visible')
+          $(`label[for=id_columns-${number}-min_int]`).css('visibility', 'visible')
+          $(`label[for=id_columns-${number}-max_int]`).css('visibility', 'visible')
+        }
+        else if (e.target && e.target.tagName == "SELECT") {
+          $(`#id_columns-${number}-min_int`).css('visibility', 'hidden')
+          $(`#id_columns-${number}-max_int`).css('visibility', 'hidden')
+          $(`label[for=id_columns-${number}-min_int]`).css('visibility', 'hidden')
+          $(`label[for=id_columns-${number}-max_int]`).css('visibility', 'hidden')
+        }
+    });
+</script>

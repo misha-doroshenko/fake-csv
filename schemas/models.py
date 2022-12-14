@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -65,3 +66,14 @@ class Column(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class FileCSV(models.Model):
+    file_name = models.CharField(max_length=255, unique=True)
+    created = models.DateField(auto_now_add=True)
+    schema = models.ForeignKey(
+        Schema,
+        on_delete=models.CASCADE,
+        related_name="files"
+    )
+    rows = models.IntegerField(validators=[MinValueValidator(1)])

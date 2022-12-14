@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from schemas.models import User, Column, Schema
+from schemas.models import User, Column, Schema, FileCSV
 
 
 @admin.register(User)
@@ -23,3 +23,4 @@ class DriverAdmin(UserAdmin):
 
 admin.site.register(Column)
 admin.site.register(Schema)
+admin.site.register(FileCSV)

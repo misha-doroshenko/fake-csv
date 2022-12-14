@@ -7,14 +7,25 @@
   {% for form in formset.forms %}
     <tr class="{% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}">
       {% for field in form.visible_fields %}
-        <td>
-          {% if forloop.first %}
-            {% for hidden in form.hidden_fields %}
-              {{ hidden }}
-            {% endfor %}
-          {% endif %}
-          {{ field|as_crispy_field }}
-        </td>
+        {% if field.label == "From" or field.label == "To"%}
+          <td class="col-1">
+            {% if forloop.first %}
+              {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+              {% endfor %}
+            {% endif %}
+            {{ field|as_crispy_field }}
+          </td>
+        {% else %}
+          <td class="col-3">
+            {% if forloop.first %}
+              {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+              {% endfor %}
+            {% endif %}
+            {{ field|as_crispy_field }}
+          </td>
+        {% endif %}
       {% endfor %}
     </tr>
   {% endfor %}

@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit
 from .custom_layout_object import *
-from schemas.models import Column, Schema
+from schemas.models import Column, Schema, FileCSV
 
 
 class LoginForm(AuthenticationForm):
@@ -45,7 +45,7 @@ class SchemaForm(forms.ModelForm):
         self.helper.label_class = "col-md-3 create-label"
         self.helper.field_class = "col-md-6"
         self.helper.layout = Layout(
-            HTML("<h1>{{ object|yesno:'Edit,New' }} Schema</h1>"),
+            HTML("<h2>{{ object|yesno:'Edit,New' }} Schema</h2>"),
             ButtonHolder(Submit("submit", "Submit"), css_class="float-right"),
             Div(
                 Field("name"),
@@ -58,16 +58,12 @@ class SchemaForm(forms.ModelForm):
 
 
 class ColumnForm(forms.ModelForm):
-    min_int = forms.IntegerField(required=False)
-    max_int = forms.IntegerField(required=False)
+    min_int = forms.IntegerField(required=False, label="From")
+    max_int = forms.IntegerField(required=False, label="To")
 
     class Meta:
         model = Column
         fields = ["name", "type", "min_int", "max_int"]
-        labels = {
-            "min_int": "Min value",
-            "max_int": "Max value",
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,3 +88,18 @@ ColumnFormset = inlineformset_factory(
     extra=1,
     can_delete=True,
 )
+
+
+class FileCSVForm(forms.ModelForm):
+
+    class Meta:
+        model = FileCSV
+        fields = ["rows"]
+        widgets = {
+            'rows': forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Rows",
+                }
+            ),
+        }

@@ -9,3 +9,11 @@ body {
 .schema-form {
   margin: 35px 50px 0 50px;
 }
+
+a {
+  font-size: 1rem;
+}
+
+.badge {
+  font-size: 0.95em;
+}

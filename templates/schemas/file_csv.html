@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <h2 class="schema-form w-50" id="title">
+    Schema Sample
+    <a href="{% url 'schemas:schema-update' pk=schema.id %}" style="float: right;">Edit schema</a>
+  </h2>
+  <table class="table table-bordered schema-form w-50">
+    <tr>
+      <th>#</th>
+      <th>Column name</th>
+      <th>Column type</th>
+    </tr>
+    {% for column in columns %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ column.name }}</td>
+        <td>{{ column.get_type_display }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+
+    <form method="post" id="post-form">
+      {% csrf_token %}
+
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-success">Generate data</button>
+
+    </form>
+
+  <table class="table table-bordered schema-form w-75" id="files">
+    <tr>
+      <th>#</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+    {% for file in files %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td><span class="badge badge-success">Ready</span></td>
+        <td><a href="#">Download</a></td>
+      </tr>
+    {% endfor %}
+
+  </table>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+  </script>
+  <script src="{% static 'libraries/csrf_protection.js' %}"></script>
+  <script>
+    let tableRowId = {{ schema.files.count }}
+    console.log(tableRowId)
+    function uuidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+      }
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault()
+        const uniqueStatusId = uuidv4()
+        const uniqueDownloadId = uuidv4()
+        $.ajax({
+            type:'POST',
+            url:"{% url 'schemas:schema-files' pk=schema.id %}",
+            data:$('#post-form').serialize(),
+            beforeSend: function(){
+                var utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+                tableRowId++
+                console.log(tableRowId)
+                $("#files").append(
+                    "<tr>" +
+                    "<td>" + tableRowId + "</td>" +
+                    "<td><span id=\"" + uniqueStatusId + "\" class='badge badge-default'>Processing</span>" + "</td>" +
+                    "<td id=\"" + uniqueDownloadId + "\">" + "</td>" +
+                    "<tr>"
+                )
+            },
+            success:function(json){
+                console.log(json)
+                document.getElementById("post-form").reset();
+                const status = document.getElementById(uniqueStatusId)
+                const download = document.getElementById(uniqueDownloadId)
+                status.innerHTML = "Ready"
+                status.setAttribute("class", "badge badge-success")
+                download.innerHTML = "<a href='#'>Download</a>"
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+        });
+    });
+</script>
+{% endblock %}
+

@@ -70,6 +70,7 @@ class Column(models.Model):
 
 class FileCSV(models.Model):
     file_name = models.CharField(max_length=255, unique=True)
+    file_path = models.CharField(max_length=255)
     created = models.DateField(auto_now_add=True)
     schema = models.ForeignKey(
         Schema,

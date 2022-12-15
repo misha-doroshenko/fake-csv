@@ -3,7 +3,7 @@
 Django project for generating CSV files with fake (dummy) data using Python and Django
 
 ## Check it out!
-[FakeCSV project deployed to PythonAnywhere]()
+[FakeCSV project deployed to PythonAnywhere](http://doroshenkomisha.pythonanywhere.com/)
 ```text
 test data:
 username: admin

@@ -7,6 +7,7 @@ from botocore.config import Config
 
 from django.conf import settings
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.files.storage import default_storage
@@ -33,12 +34,13 @@ class NewLoginView(LoginView):
     form_class = LoginForm
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect("/")
 
 
-class SchemaCreateView(generic.edit.CreateView):
+class SchemaCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Schema
     template_name = "../templates/schemas/schema_form.html"
     form_class = SchemaForm
@@ -69,7 +71,7 @@ class SchemaCreateView(generic.edit.CreateView):
         return reverse_lazy('schemas:schema-list')
 
 
-class SchemaUpdateView(generic.edit.UpdateView):
+class SchemaUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Schema
     template_name = "../templates/schemas/schema_form.html"
     form_class = SchemaForm
@@ -100,11 +102,12 @@ class SchemaUpdateView(generic.edit.UpdateView):
         return reverse_lazy('schemas:schema-list')
 
 
-class SchemaDeleteView(generic.DeleteView):
+class SchemaDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Schema
     success_url = reverse_lazy("schemas:schema-list")
 
 
+@login_required
 def schema_files(request, pk):
     schema = Schema.objects.get(id=pk)
     columns = list(Column.objects.filter(schema_id=pk))

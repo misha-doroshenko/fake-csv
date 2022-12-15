@@ -15,11 +15,12 @@ password: edcujm37
 Python3 must be already installed
 
 ```shell
-git clone https://github.com/misha-doroshenko/fake-csv.git
-cd fake-csv
+git https://github.com/misha-doroshenko/fake_csv.git
+cd fake_csv
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+python manage.py migrate
 python manage.py runserver  # starts Django project
 ```
 
@@ -29,3 +30,7 @@ python manage.py runserver  # starts Django project
 * Create schema with a formset
 * Dynamically adding form fields
 * Save csv files to S3 bucket and download them
+
+## Database structure
+
+![Database structure](database_structure.png)

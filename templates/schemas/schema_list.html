@@ -17,10 +17,13 @@
         </tr>
       {% for schema in schema_list %}
         <tr>
-          <td>{{ schema.id }}</td>
-          <td><a href="#">{{ schema.name }}</a></td>
-          <td>{{ schema.modified }}</td>
-          <td><a href="{% url 'schemas:schema-update' pk=schema.id %}">Edit</a></td>
+          <td class="col-1"><b>{{ forloop.counter }}</b></td>
+          <td class="col-3"><a href="{% url 'schemas:schema-files' pk=schema.id %}">{{ schema.name }}</a></td>
+          <td class="col-4">{{ schema.modified }}</td>
+          <td class="col-3">
+            <a href="{% url 'schemas:schema-update' pk=schema.id %}" class="pr-3">Edit schema</a>
+            <a href="{% url 'schemas:schema-delete' pk=schema.id %}" style="color: red;">Delete</a>
+          </td>
         </tr>
       {% endfor %}
 

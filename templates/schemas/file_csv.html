@@ -14,7 +14,7 @@
     </tr>
     {% for column in columns %}
       <tr>
-        <td>{{ forloop.counter }}</td>
+        <td><b>{{ forloop.counter }}</b></td>
         <td>{{ column.name }}</td>
         <td>{{ column.get_type_display }}</td>
       </tr>
@@ -23,23 +23,33 @@
 
     <form method="post" id="post-form">
       {% csrf_token %}
-
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-success">Generate data</button>
+      <div class="row schema-form">
+        <h2 class="col-3">Data sets</h2>
+        <div class="col-7" style="float: right">
+        <div class="col-2" style="float: right;">
+          {{ form.rows }}
+        </div>
+        <div class="col-3" style="float: right;">
+          <button type="submit" class="btn btn-success">Generate data</button>
+        </div>
+        </div>
+      </div>
 
     </form>
 
-  <table class="table table-bordered schema-form w-75" id="files">
+  <table class="table table-bordered schema-form w-75 mb-5" id="files">
     <tr>
       <th>#</th>
+      <th>Created</th>
       <th>Status</th>
       <th>Action</th>
     </tr>
     {% for file in files %}
       <tr>
-        <td>{{ forloop.counter }}</td>
+        <td><b>{{ forloop.counter }}</b></td>
+        <td>{{ file.created }}</td>
         <td><span class="badge badge-success">Ready</span></td>
-        <td><a href="#">Download</a></td>
+        <td><a href="{{ file.file_path }}">Download</a></td>
       </tr>
     {% endfor %}
 
@@ -49,7 +59,6 @@
   <script src="{% static 'libraries/csrf_protection.js' %}"></script>
   <script>
     let tableRowId = {{ schema.files.count }}
-    console.log(tableRowId)
     function uuidv4() {
         return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -64,13 +73,14 @@
             url:"{% url 'schemas:schema-files' pk=schema.id %}",
             data:$('#post-form').serialize(),
             beforeSend: function(){
-                var utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+                var utc = new Date().toJSON().slice(0,10)
                 tableRowId++
                 console.log(tableRowId)
                 $("#files").append(
                     "<tr>" +
-                    "<td>" + tableRowId + "</td>" +
-                    "<td><span id=\"" + uniqueStatusId + "\" class='badge badge-default'>Processing</span>" + "</td>" +
+                    "<td><b>" + tableRowId + "</b></td>" +
+                    "<td>" + utc + "</td>" +
+                    "<td><span id=\"" + uniqueStatusId + "\" class='badge badge-secondary'>Processing</span>" + "</td>" +
                     "<td id=\"" + uniqueDownloadId + "\">" + "</td>" +
                     "<tr>"
                 )
@@ -82,11 +92,17 @@
                 const download = document.getElementById(uniqueDownloadId)
                 status.innerHTML = "Ready"
                 status.setAttribute("class", "badge badge-success")
-                download.innerHTML = "<a href='#'>Download</a>"
+                download.innerHTML = "<a href="+ json.bucket_url + " download>Download</a>"
             },
-            error : function(xhr,errmsg,err) {
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
+            error : function(xhr, status, error) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                document.getElementById("post-form").reset();
+                const status_error = document.getElementById(uniqueStatusId)
+                const download = document.getElementById(uniqueDownloadId)
+                status_error.innerHTML = "Failed"
+                status_error.setAttribute("class", "badge badge-danger")
+                download.innerHTML = xhr.responseJSON["response"]
+            }
         });
     });
 </script>

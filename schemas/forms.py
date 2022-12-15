@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
+from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory, BaseFormSet, BaseInlineFormSet
 from django.utils.translation import gettext_lazy as _
 
@@ -71,6 +72,17 @@ class ColumnForm(forms.ModelForm):
         self.helper.label_class = "pl-2"
         self.helper.field_class = "pl-2"
 
+    def clean(self):
+        if "type" in self.cleaned_data and self.cleaned_data["type"] == "Int":
+            if not self.cleaned_data["min_int"] or not self.cleaned_data["max_int"]:
+                raise ValidationError("These fields are required")
+            elif self.cleaned_data["min_int"] >= self.cleaned_data["max_int"]:
+                self.add_error("min_int", "From > To")
+                self.add_error("max_int", "To < From")
+                raise ValidationError("Min value must be bigger than max value")
+
+        return super().clean()
+
 
 class RequiredFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
@@ -91,7 +103,6 @@ ColumnFormset = inlineformset_factory(
 
 
 class FileCSVForm(forms.ModelForm):
-
     class Meta:
         model = FileCSV
         fields = ["rows"]
@@ -103,3 +114,8 @@ class FileCSVForm(forms.ModelForm):
                 }
             ),
         }
+
+    def clean_rows(self):
+        if self.cleaned_data["rows"] < 1:
+            raise ValidationError("Rows must be > 0")
+        return self.cleaned_data["rows"]

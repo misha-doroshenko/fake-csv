@@ -111,11 +111,14 @@ class SchemaDeleteView(LoginRequiredMixin, generic.DeleteView):
 def schema_files(request, pk):
     schema = Schema.objects.get(id=pk)
     columns = list(Column.objects.filter(schema_id=pk))
-    files = list(FileCSV.objects.filter(schema_id=pk))
     form = FileCSVForm
+    if request.method == "GET":
+        for file in list(FileCSV.objects.filter(schema_id=pk)):
+            file.file_path = generate_presigned_url(file.file_name)
+            file.save()
+    files = list(FileCSV.objects.filter(schema_id=pk))
 
     if request.method == "POST":
-        response, context = {}, {}
         form = FileCSVForm(request.POST)
         if form.is_valid():
             form.instance.file_name = f"schema_{str(uuid.uuid4())}.csv"

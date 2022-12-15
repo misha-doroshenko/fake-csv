@@ -1,0 +1,42 @@
+body {
+  font-family: "Lucinda Grande", "Lucinda Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+}
+
+.hidden {
+  display: none;
+}
+
+.schema-form {
+  margin: 35px 50px 0 50px;
+}
+
+a {
+  font-size: 1rem;
+}
+
+.badge {
+  font-size: 0.95em;
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: rgb(245, 245, 249);
+  overflow: hidden;
+}
+
+
+/* Style the links inside the navigation bar */
+.topnav a, .nav-span {
+  float: left;
+  color:black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.user-info {
+  float: right;
+  color: grey;
+
+}

@@ -1,24 +1,30 @@
-import csv
 import datetime
-import io
-import random
-import boto3
-from botocore.config import Config
 
-from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from schemas.extra_functions import generate_presigned_url, generate_data, create_save_csv, fill_data
-from schemas.forms import LoginForm, SchemaForm, ColumnFormset, FileCSVForm
-from schemas.models import Schema, Column, FileCSV
+from schemas.extra_functions import (
+    generate_presigned_url,
+    create_save_csv,
+    fill_data
+)
+from schemas.forms import (
+    LoginForm,
+    SchemaForm,
+    ColumnFormset,
+    FileCSVForm
+)
+from schemas.models import (
+    Schema,
+    Column,
+    FileCSV
+)
 import uuid
 
 
